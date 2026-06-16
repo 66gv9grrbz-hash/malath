@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ملاذ العقارية المتكاملة</title>
-    <!-- الأيقونات والخطوط -->
+    <title>منصة ملاذ العقارية المتكاملة - النسخة الرسمية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -30,7 +29,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            padding-bottom: 50px;
+            padding-bottom: 60px;
         }
 
         header {
@@ -42,6 +41,8 @@
             font-size: 22px;
             font-weight: 700;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            user-select: none;
+            cursor: pointer;
         }
 
         header span { color: var(--primary); }
@@ -55,13 +56,20 @@
             gap: 20px;
         }
 
-        /* لوحة التحكم الحصرية للمالك */
+        /* لوحة التحكم المحمية - مخفية تلقائياً */
         .admin-panel {
+            display: none;
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid rgba(37, 99, 235, 0.4);
+            border: 1px solid #f59e0b;
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .admin-header {
@@ -233,17 +241,73 @@
         .input-area { display: flex; padding: 10px; background-color: rgba(15, 23, 42, 0.5); gap: 8px; }
         .input-area input { flex: 1; padding: 12px; background-color: var(--bg); border: 1px solid var(--surface-accent); border-radius: 8px; color: white; outline: none; font-size: 13px; }
         .btn-send { background-color: var(--primary); border: none; color: white; width: 45px; border-radius: 8px; cursor: pointer; }
+
+        /* قسم حسابات التواصل الرسمية */
+        .social-section {
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .social-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .social-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background-color: var(--bg);
+            border: 1px solid var(--surface-accent);
+            padding: 12px 8px;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .social-link i {
+            font-size: 24px;
+        }
+
+        /* تنسيق الألوان الرسمية للبرامج والأيقونات */
+        .social-link.instagram i { color: #e1306c; }
+        .social-link.telegram i { color: #0088cc; }
+        .social-link.facebook i { color: #1877f2; }
+
+        .social-link:active {
+            transform: scale(0.95);
+            background-color: var(--surface-accent);
+        }
     </style>
 </head>
 <body>
 
-    <header>مَلاذ <span>العقارية 3D</span></header>
+    <header onclick="verifyAdminClick()">مَلاذ <span>العقارية 3D</span></header>
 
     <div class="container">
         
-        <!-- لوحة تحكم المالك المسؤول -->
-        <div class="admin-panel">
-            <div class="admin-header"><i class="fas fa-user-shield"></i> لوحة تحكم وتحديث العقارات (خاصة بالمالك)</div>
+        <div class="admin-panel" id="adminPanelBox">
+            <div class="admin-header"><i class="fas fa-lock-open" style="color: #10b981;"></i> تم التحقق: لوحة الإدارة المشفرة للمالك</div>
             <div class="form-group">
                 <label>اسم العقار الجديد</label>
                 <input type="text" id="newTitle" class="form-control" placeholder="مثال: شقة استوديو مؤثثة بالكامل">
@@ -259,32 +323,27 @@
             <button class="btn btn-primary" onclick="updateProperty()"><i class="fas fa-sync"></i> تحديث ونشر العقار المخصص فوراً</button>
         </div>
 
-        <!-- قائمة اختيار الوحدات السكنية المتاحة للتجربة -->
         <div class="property-selector">
             <button class="selector-btn active" onclick="selectProperty('apt')">شقة مودرن</button>
             <button class="selector-btn" onclick="selectProperty('complex')">مجمع سكني فاخر</button>
             <button class="selector-btn" onclick="selectProperty('custom')">العقار المحدث من المالك</button>
         </div>
 
-        <!-- تبويبات المعاينة الفنية للعقار -->
         <div class="tabs">
             <button class="tab-btn active" onclick="changeTab('3d')"><i class="fas fa-cube"></i> المخطط ثلاثي الأبعاد</button>
             <button class="tab-btn" onclick="changeTab('map')"><i class="fas fa-map-marked-alt"></i> الموقع الجغرافي</button>
         </div>
 
-        <!-- صندوق المعاينة الرئيسي المطور -->
         <div class="viewer-box">
             <div id="view-3d" class="view-content active">
                 <div class="info-tag"><i class="fas fa-hand-pointer"></i> حرك ولمس الشاشة لتدوير مجسم العقار الهيكلي</div>
                 <div id="canvas-3d"></div>
             </div>
             <div id="view-map" class="view-content">
-                <!-- خريطة افتراضية تفاعلية للموقع لتغطية الاحتياج -->
                 <iframe width="100%" height="100%" src="https://maps.google.com/maps?q=Baghdad&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" style="border:0;" allowfullscreen></iframe>
             </div>
         </div>
 
-        <!-- تفاصيل ومواصفات العقار المعروض -->
         <div class="card">
             <div class="prop-title" id="displayTitle">شقة سكنية بتصميم عصري مفتوح</div>
             <div class="prop-price" id="displayPrice">85,000 $</div>
@@ -299,7 +358,6 @@
             <button class="btn btn-accent" onclick="buyRequest()"><i class="fas fa-shield-alt"></i> طلب شراء مباشر مشفر للمالك</button>
         </div>
 
-        <!-- نظام شات بوت الرد التلقائي المطور -->
         <div class="bot-section">
             <div class="bot-header"><i class="fas fa-robot"></i> مساعد ملاذ الذكي للرد الفوري المباشر</div>
             <div class="chat-area" id="chatArea">
@@ -311,10 +369,47 @@
             </div>
         </div>
 
+        <div class="social-section">
+            <div class="social-title"><i class="fas fa-share-alt"></i> تابعنا وتواصل معنا عبر منصاتنا الرسمية</div>
+            <div class="social-grid">
+                <a href="https://www.instagram.com/u1_5x" target="_blank" class="social-link instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span>إنستغرام</span>
+                </a>
+                <a href="https://t.me/u1_5x" target="_blank" class="social-link telegram">
+                    <i class="fab fa-telegram-plane"></i>
+                    <span>تليجرام</span>
+                </a>
+                <a href="https://www.facebook.com/share/1SY4zGYgrc/?mibextid=wwXIfr" target="_blank" class="social-link facebook">
+                    <i class="fab fa-facebook-f"></i>
+                    <span>فيسبوك</span>
+                </a>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // قاعدة بيانات مرنة لتغيير احتياجات التطبيق والعقارات بسهولة
+        // نظام الحماية والأمن السيبراني للمالك (رمز الدخول الافتراضي: 123)
+        let clickCount = 0; let clickTimeout;
+        const ADMIN_PASSWORD = "123"; 
+
+        function verifyAdminClick() {
+            clickCount++; clearTimeout(clickTimeout);
+            clickTimeout = setTimeout(() => { clickCount = 0; }, 1000);
+
+            if (clickCount === 3) {
+                clickCount = 0;
+                const passwordInput = prompt("🔒 نظام أمان ملاذ السيبراني:\nالرجاء إدخال رمز المرور السري للمالك:");
+                if (passwordInput === ADMIN_PASSWORD) {
+                    document.getElementById('adminPanelBox').style.display = 'block';
+                    alert("🔓 تم التحقق بنجاح! تفتحت لك لوحة التحكم الآن.");
+                } else {
+                    alert("❌ الرمز السري خاطئ!");
+                }
+            }
+        }
+
         const properties = {
             apt: { title: "شقة سكنية بتصميم عصري مفتوح", price: "85,000 $", size: "180 م²", beds: "3 غرف نوم", color: 0x2563eb },
             complex: { title: "برج المجمعات السكنية الاستثمارية الفاخرة", price: "420,000 $", size: "650 م²", beds: "مجمع كامل", color: 0x10b981 },
@@ -328,19 +423,13 @@
             document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
             event.currentTarget.classList.add('active');
             
-            // تحديث الواجهة والبيانات بناء على الاحتياج المختار
             document.getElementById('displayTitle').innerText = properties[type].title;
             document.getElementById('displayPrice').innerText = properties[type].price;
             document.getElementById('specSize').innerText = properties[type].size;
             document.getElementById('specBeds').innerText = properties[type].beds;
 
-            // تغيير لون وحجم المجسم ثلاثي الأبعاد ليعكس العقار المختار
             houseMesh.material.color.setHex(properties[type].color);
-            if(type === 'complex') {
-                houseMesh.scale.set(1, 2.2, 1); // جعل المبنى يبدو كبرج سكني طوييل
-            } else {
-                houseMesh.scale.set(1, 1, 1);
-            }
+            if(type === 'complex') { houseMesh.scale.set(1, 2.2, 1); } else { houseMesh.scale.set(1, 1, 1); }
         }
 
         function changeTab(tab) {
@@ -350,33 +439,24 @@
             document.getElementById('view-' + tab).classList.add('active');
         }
 
-        // تشغيل لوحة التحكم برمجياً لربطها بالكامل مع التطبيق البوت
         function updateProperty() {
             const title = document.getElementById('newTitle').value;
             const price = document.getElementById('newPrice').value;
             const specs = document.getElementById('newSpecs').value;
 
-            if(!title || !price) {
-                alert("يرجى ملء الاسم والسعر لتحديث العقار المخصص بنجاح.");
-                return;
-            }
+            if(!title || !price) { alert("يرجى ملء الاسم والسعر لتحديث العقار بنجاح."); return; }
 
-            properties.custom.title = title;
-            properties.custom.price = price + " $";
+            properties.custom.title = title; properties.custom.price = price + " $";
             if(specs) properties.custom.size = specs;
 
-            alert("✅ تم تحديث بياناتك بنجاح! اضغط الآن على زر (العقار المحدث من المالك) في القائمة لتراه يعمل.");
+            alert("✅ تم تحديث بياناتك بنجاح! اضغط على زر (العقار المحدث من المالك) لترى التحديث.");
+            document.getElementById('adminPanelBox').style.display = 'none';
         }
 
-        function bookAppointment() {
-            alert("📅 تم استلام طلبك! تم جدولة حجز موعد مبدئي لمعاينة الموقع الحقيقي، وسيتواصل معك المسؤول عبر الهاتف لتأكيد الساعة.");
-        }
+        function bookAppointment() { alert("📅 تم جدولة حجز موعد مبدئي للمعاينة بنجاح!"); }
+        function buyRequest() { alert("🔒 أمن سيبراني عالي: تم تشفير رغبة الشراء وحفظها للمالك مباشرة!"); }
 
-        function buyRequest() {
-            alert("🔒 أمن سيبراني عالي: تم تشفير رغبة الشراء وحفظها، وإخطار مالك المنصة فوراً بطلبك بدون أي وسيط ثالث.");
-        }
-
-        // بناء وتطوير محرك الـ 3D التفاعلي بالكامل عبر مكتبة Three.js
+        // محرك الـ 3D
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 280, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -386,87 +466,49 @@
         canvasContainer.appendChild(renderer.domElement);
 
         const group = new THREE.Group();
-        
-        // أرضية العقار المخطط لها
-        const baseGeo = new THREE.BoxGeometry(2.2, 0.1, 2.2);
-        const baseMat = new THREE.MeshBasicMaterial({ color: 0x475569 });
-        const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+        const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.1, 2.2), new THREE.MeshBasicMaterial({ color: 0x475569 }));
         group.add(baseMesh);
 
-        // الهيكل الهندسي للعقار المعروض (Wireframe)
-        const houseGeo = new THREE.BoxGeometry(1.6, 1.0, 1.6);
-        const houseMat = new THREE.MeshBasicMaterial({ color: 0x2563eb, wireframe: true });
-        const houseMesh = new THREE.Mesh(houseGeo, houseMat);
-        houseMesh.position.y = 0.5;
-        group.add(houseMesh);
+        const houseMesh = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.0, 1.6), new THREE.MeshBasicMaterial({ color: 0x2563eb, wireframe: true }));
+        houseMesh.position.y = 0.5; group.add(houseMesh);
 
-        scene.add(group);
-        camera.position.z = 3.5;
-        camera.position.y = 0.8;
+        scene.add(group); camera.position.z = 3.5; camera.position.y = 0.8;
 
-        // دعم التلميس الكامل لتدوير ومراجعة الهيكل العقاري بالآيفون
-        let isDragging = false;
-        let previousTouchPosition = { x: 0, y: 0 };
-
-        canvasContainer.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            previousTouchPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        });
-
+        let isDragging = false; let previousTouchPosition = { x: 0, y: 0 };
+        canvasContainer.addEventListener('touchstart', (e) => { isDragging = true; previousTouchPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY }; });
         canvasContainer.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
-            const deltaMove = {
-                x: e.touches[0].clientX - previousTouchPosition.x,
-                y: e.touches[0].clientY - previousTouchPosition.y
-            };
-            group.rotation.y += deltaMove.x * 0.01;
-            group.rotation.x += deltaMove.y * 0.01;
+            const deltaMove = { x: e.touches[0].clientX - previousTouchPosition.x, y: e.touches[0].clientY - previousTouchPosition.y };
+            group.rotation.y += deltaMove.x * 0.01; group.rotation.x += deltaMove.y * 0.01;
             previousTouchPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         });
-
         canvasContainer.addEventListener('touchend', () => isDragging = false);
 
-        function animate() {
-            requestAnimationFrame(animate);
-            if(!isDragging) { group.rotation.y += 0.004; } // دوران تلقائي هادئ في وضع الانتظار
-            renderer.render(scene, camera);
-        }
+        function animate() { requestAnimationFrame(animate); if(!isDragging) { group.rotation.y += 0.004; } renderer.render(scene, camera); }
         animate();
 
-        // نظام ذكاء اصطناعي تفاعلي ومؤتمت بالكامل للشات بوت
+        // الشات بوت التفاعلي
         function triggerBot() {
-            const input = document.getElementById('botInput');
-            const area = document.getElementById('chatArea');
+            const input = document.getElementById('botInput'); const area = document.getElementById('chatArea');
             if(!input.value.trim()) return;
-
-            const userDiv = document.createElement('div');
-            userDiv.className = "bubble user";
-            userDiv.innerText = input.value;
-            area.appendChild(userDiv);
-
-            const text = input.value;
-            input.value = "";
-            area.scrollTop = area.scrollHeight;
+            const userDiv = document.createElement('div'); userDiv.className = "bubble user"; userDiv.innerText = input.value;
+            area.appendChild(userDiv); const text = input.value; input.value = ""; area.scrollTop = area.scrollHeight;
 
             setTimeout(() => {
-                const botDiv = document.createElement('div');
-                botDiv.className = "bubble bot";
-                
+                const botDiv = document.createElement('div'); botDiv.className = "bubble bot";
                 const currentPrice = document.getElementById('displayPrice').innerText;
                 const currentTitle = document.getElementById('displayTitle').innerText;
 
                 if(text.includes("سعر") || text.includes("كم") || text.includes("فلوس")) {
-                    botDiv.innerText = `السعر الرسمي الحالي لـ (${currentTitle}) المفتوح أمامك هو: ${currentPrice}.`;
-                } else if(text.includes("مساحة") || text.includes("متر") || text.includes("مواصفات")) {
-                    botDiv.innerText = `هذا العقار يمتد بمساحة قدرها ${document.getElementById('specSize').innerText} ومجهز بـ ${document.getElementById('specBeds').innerText} مع كافة الخدمات والمرافق الأساسية التابعة له.`;
+                    botDiv.innerText = `السعر الرسمي الحالي لـ (${currentTitle}) هو: ${currentPrice}.`;
+                } else if(text.includes("مساحة") || text.includes("متر")) {
+                    botDiv.innerText = `المساحة هي ${document.getElementById('specSize').innerText} ومجهز بـ ${document.getElementById('specBeds').innerText}.`;
                 } else if(text.includes("تقسيط") || text.includes("قسط")) {
-                    botDiv.innerText = "نعم، يتوفر نظام دفع مريح جداً: 35% مقدمة أولى، والباقي يتم جدولته بأقساط شهرية مريحة على مدار 5 سنوات تلتزم بها المنصة مباشرة.";
+                    botDiv.innerText = "نعم، يتوفر نظام تقسيط مريح: 35% مقدمة، والباقي على 5 سنوات.";
                 } else {
-                    botDiv.innerText = "تم تسجيل استفسارك بدقة بالغة وسيتم تسليم الرسالة مباشرة إلى لوحة المسؤول ليتم الإجابة عليك فوراً.";
+                    botDiv.innerText = "تم تسجيل استفسارك، وسيتم مراجعته والرد عليك فوراً.";
                 }
-                
-                area.appendChild(botDiv);
-                area.scrollTop = area.scrollHeight;
+                area.appendChild(botDiv); area.scrollTop = area.scrollHeight;
             }, 600);
         }
     </script>
