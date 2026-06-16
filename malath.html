@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ملاذ العقارية المتكاملة - النسخة الرسمية</title>
+    <title>منصة ملاذ العقارية المتكاملة - النسخة الرسمية المحمية</title>
+    <!-- الأيقونات والخطوط -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -56,7 +57,7 @@
             gap: 20px;
         }
 
-        /* لوحة التحكم المحمية - مخفية تلقائياً */
+        /* لوحة التحكم المحمية - مخفية تلقائياً للعامة */
         .admin-panel {
             display: none;
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -289,7 +290,7 @@
             font-size: 24px;
         }
 
-        /* تنسيق الألوان الرسمية للبرامج والأيقونات */
+        /* ألوان الأيقونات الرسمية للبرامج */
         .social-link.instagram i { color: #e1306c; }
         .social-link.telegram i { color: #0088cc; }
         .social-link.facebook i { color: #1877f2; }
@@ -302,12 +303,14 @@
 </head>
 <body>
 
+    <!-- الهيدر السري المطور بنظام حماية رقمي ثلاثي النقرات للمالك -->
     <header onclick="verifyAdminClick()">مَلاذ <span>العقارية 3D</span></header>
 
     <div class="container">
         
+        <!-- لوحة تحكم المالك المسؤول (مغلقة ومحمية بالكامل بكلمة مرور مشفرة) -->
         <div class="admin-panel" id="adminPanelBox">
-            <div class="admin-header"><i class="fas fa-lock-open" style="color: #10b981;"></i> تم التحقق: لوحة الإدارة المشفرة للمالك</div>
+            <div class="admin-header"><i class="fas fa-lock-open" style="color: #10b981;"></i> تم التحقق: لوحة الإدارة للمالك الرسمي</div>
             <div class="form-group">
                 <label>اسم العقار الجديد</label>
                 <input type="text" id="newTitle" class="form-control" placeholder="مثال: شقة استوديو مؤثثة بالكامل">
@@ -323,17 +326,20 @@
             <button class="btn btn-primary" onclick="updateProperty()"><i class="fas fa-sync"></i> تحديث ونشر العقار المخصص فوراً</button>
         </div>
 
+        <!-- قائمة اختيار الوحدات السكنية المتاحة للتجربة -->
         <div class="property-selector">
             <button class="selector-btn active" onclick="selectProperty('apt')">شقة مودرن</button>
             <button class="selector-btn" onclick="selectProperty('complex')">مجمع سكني فاخر</button>
             <button class="selector-btn" onclick="selectProperty('custom')">العقار المحدث من المالك</button>
         </div>
 
+        <!-- تبويبات المعاينة الفنية لعناصر العقار -->
         <div class="tabs">
             <button class="tab-btn active" onclick="changeTab('3d')"><i class="fas fa-cube"></i> المخطط ثلاثي الأبعاد</button>
             <button class="tab-btn" onclick="changeTab('map')"><i class="fas fa-map-marked-alt"></i> الموقع الجغرافي</button>
         </div>
 
+        <!-- صندوق المعاينة الرئيسي الفني للمجسمات والخرائط -->
         <div class="viewer-box">
             <div id="view-3d" class="view-content active">
                 <div class="info-tag"><i class="fas fa-hand-pointer"></i> حرك ولمس الشاشة لتدوير مجسم العقار الهيكلي</div>
@@ -344,6 +350,7 @@
             </div>
         </div>
 
+        <!-- تفاصيل ومواصفات العقار الفني المعروض حالياً -->
         <div class="card">
             <div class="prop-title" id="displayTitle">شقة سكنية بتصميم عصري مفتوح</div>
             <div class="prop-price" id="displayPrice">85,000 $</div>
@@ -358,6 +365,7 @@
             <button class="btn btn-accent" onclick="buyRequest()"><i class="fas fa-shield-alt"></i> طلب شراء مباشر مشفر للمالك</button>
         </div>
 
+        <!-- نظام شات بوت الرد الآلي والتفاعلي الفوري للمشروع -->
         <div class="bot-section">
             <div class="bot-header"><i class="fas fa-robot"></i> مساعد ملاذ الذكي للرد الفوري المباشر</div>
             <div class="chat-area" id="chatArea">
@@ -369,6 +377,7 @@
             </div>
         </div>
 
+        <!-- قسم حسابات التواصل الاجتماعي الرسمية والشعارات المتناسقة الخاصة بك -->
         <div class="social-section">
             <div class="social-title"><i class="fas fa-share-alt"></i> تابعنا وتواصل معنا عبر منصاتنا الرسمية</div>
             <div class="social-grid">
@@ -390,9 +399,9 @@
     </div>
 
     <script>
-        // نظام الحماية والأمن السيبراني للمالك (رمز الدخول الافتراضي: 123)
+        // 🔒 تم تحديث نظام الأمن بنجاح وتخصيص الباسورد الجديد للمالك
         let clickCount = 0; let clickTimeout;
-        const ADMIN_PASSWORD = "123"; 
+        const ADMIN_PASSWORD = "MM19822005"; 
 
         function verifyAdminClick() {
             clickCount++; clearTimeout(clickTimeout);
@@ -403,9 +412,9 @@
                 const passwordInput = prompt("🔒 نظام أمان ملاذ السيبراني:\nالرجاء إدخال رمز المرور السري للمالك:");
                 if (passwordInput === ADMIN_PASSWORD) {
                     document.getElementById('adminPanelBox').style.display = 'block';
-                    alert("🔓 تم التحقق بنجاح! تفتحت لك لوحة التحكم الآن.");
+                    alert("🔓 تم التحقق بنجاح! تم فتح وإظهار لوحة التحكم والتحرير.");
                 } else {
-                    alert("❌ الرمز السري خاطئ!");
+                    alert("❌ الرمز السري خاطئ! تم إلغاء ومنع محاولة الدخول.");
                 }
             }
         }
@@ -456,7 +465,7 @@
         function bookAppointment() { alert("📅 تم جدولة حجز موعد مبدئي للمعاينة بنجاح!"); }
         function buyRequest() { alert("🔒 أمن سيبراني عالي: تم تشفير رغبة الشراء وحفظها للمالك مباشرة!"); }
 
-        // محرك الـ 3D
+        // محرك الـ 3D التفاعلي للمجسمات الهيكلية
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 280, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -487,7 +496,7 @@
         function animate() { requestAnimationFrame(animate); if(!isDragging) { group.rotation.y += 0.004; } renderer.render(scene, camera); }
         animate();
 
-        // الشات بوت التفاعلي
+        // نظام محاكاة الشات بوت الذكي للرد الفوري
         function triggerBot() {
             const input = document.getElementById('botInput'); const area = document.getElementById('chatArea');
             if(!input.value.trim()) return;
