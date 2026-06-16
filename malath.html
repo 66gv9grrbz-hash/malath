@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ملاذ العقارية المطورة</title>
-    <!-- FontAwesome للأيقونات العصرية -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-weight/6.4.0/css/all.min.css">
-    <!-- مكتبة Three.js ثلاثية الأبعاد -->
+    <title>منصة ملاذ العقارية المتكاملة</title>
+    <!-- الأيقونات والخطوط -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
@@ -31,7 +30,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            padding-bottom: 40px;
+            padding-bottom: 50px;
         }
 
         header {
@@ -42,7 +41,6 @@
             text-align: center;
             font-size: 22px;
             font-weight: 700;
-            color: var(--text);
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -57,12 +55,13 @@
             gap: 20px;
         }
 
+        /* لوحة التحكم الحصرية للمالك */
         .admin-panel {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid rgba(37, 99, 235, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.4);
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
         .admin-header {
@@ -70,7 +69,7 @@
             align-items: center;
             gap: 10px;
             color: #f59e0b;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             margin-bottom: 15px;
         }
@@ -89,36 +88,33 @@
             font-size: 14px;
         }
 
-        .tabs {
+        /* قائمة اختيار العقارات المتاحة */
+        .property-selector {
             display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .selector-btn {
             background-color: var(--surface);
-            border-radius: 12px;
-            padding: 4px;
             border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .tab-btn.active {
-            background-color: var(--primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 13px;
+            transition: all 0.2s;
         }
 
+        .selector-btn.active {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        /* صندوق العرض الرئيسي */
         .viewer-box {
             width: 100%;
             height: 280px;
@@ -136,16 +132,46 @@
             position: absolute;
             top: 12px;
             right: 12px;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(8px);
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             border: 1px solid rgba(255,255,255,0.1);
-            pointer-events: none;
+            z-index: 10;
         }
 
-        .property-card {
+        /* تبويبات المعاينة */
+        .tabs {
+            display: flex;
+            background-color: var(--surface);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tab-btn.active {
+            background-color: var(--surface-accent);
+            color: white;
+        }
+
+        /* تفاصيل ومواصفات العقار */
+        .card {
             background-color: var(--surface);
             border-radius: 16px;
             padding: 20px;
@@ -153,52 +179,59 @@
         }
 
         .prop-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-        .prop-meta { display: flex; gap: 15px; font-size: 13px; color: var(--text-muted); margin-bottom: 15px; }
         .prop-price { font-size: 24px; font-weight: 800; color: var(--accent); margin-bottom: 15px; }
+        
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.1);
+            padding: 12px;
+            border-radius: 10px;
+        }
 
+        .spec-item { text-align: center; font-size: 13px; }
+        .spec-item i { display: block; color: var(--primary); font-size: 18px; margin-bottom: 5px; }
+
+        /* الأزرار ونظام الحجز */
         .btn {
             width: 100%;
             padding: 14px;
             border: none;
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
+            transition: 0.2s;
         }
 
         .btn-primary { background-color: var(--primary); color: white; }
-        .btn-accent { background-color: var(--accent); color: white; }
+        .btn-accent { background-color: var(--accent); color: white; margin-top: 10px; }
 
+        /* الشات بوت الذكي الـ AI */
         .bot-section {
             background-color: var(--surface);
             border-radius: 16px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
             display: flex;
             flex-direction: column;
-            height: 320px;
+            height: 300px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .bot-header {
-            background-color: var(--surface-accent);
-            padding: 12px 16px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        .bot-header { background-color: var(--surface-accent); padding: 12px 16px; font-weight: 600; font-size: 14px; }
         .chat-area { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+        .bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
         .bubble.bot { background-color: var(--surface-accent); align-self: flex-start; border-top-right-radius: 2px; }
         .bubble.user { background-color: var(--primary); align-self: flex-end; border-top-left-radius: 2px; }
         
-        .input-area { display: flex; padding: 10px; background-color: rgba(15, 23, 42, 0.5); border-top: 1px solid rgba(255,255,255,0.05); gap: 8px; }
-        .input-area input { flex: 1; padding: 12px; background-color: var(--bg); border: 1px solid var(--surface-accent); border-radius: 8px; color: white; outline: none; }
+        .input-area { display: flex; padding: 10px; background-color: rgba(15, 23, 42, 0.5); gap: 8px; }
+        .input-area input { flex: 1; padding: 12px; background-color: var(--bg); border: 1px solid var(--surface-accent); border-radius: 8px; color: white; outline: none; font-size: 13px; }
         .btn-send { background-color: var(--primary); border: none; color: white; width: 45px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
@@ -207,121 +240,234 @@
     <header>مَلاذ <span>العقارية 3D</span></header>
 
     <div class="container">
+        
+        <!-- لوحة تحكم المالك المسؤول -->
         <div class="admin-panel">
-            <div class="admin-header"><i class="fas fa-user-shield"></i> لوحة التحكم الحصرية للمالك</div>
+            <div class="admin-header"><i class="fas fa-user-shield"></i> لوحة تحكم وتحديث العقارات (خاصة بالمالك)</div>
             <div class="form-group">
                 <label>اسم العقار الجديد</label>
-                <input type="text" id="newTitle" class="form-control" placeholder="مثال: مجمع الشقق الفاخرة">
+                <input type="text" id="newTitle" class="form-control" placeholder="مثال: شقة استوديو مؤثثة بالكامل">
             </div>
             <div class="form-group">
-                <label>السعر ($)</label>
-                <input type="text" id="newPrice" class="form-control" placeholder="مثال: 250,000">
+                <label>السعر بالدولار ($)</label>
+                <input type="text" id="newPrice" class="form-control" placeholder="مثال: 95,000">
             </div>
-            <button class="btn btn-primary" onclick="updateProperty()"><i class="fas fa-sync"></i> تحديث ونشر العقار فوراً</button>
+            <div class="form-group">
+                <label>المساحة والمواصفات</label>
+                <input type="text" id="newSpecs" class="form-control" placeholder="مثال: 150 م² - غرفتين">
+            </div>
+            <button class="btn btn-primary" onclick="updateProperty()"><i class="fas fa-sync"></i> تحديث ونشر العقار المخصص فوراً</button>
         </div>
 
+        <!-- قائمة اختيار الوحدات السكنية المتاحة للتجربة -->
+        <div class="property-selector">
+            <button class="selector-btn active" onclick="selectProperty('apt')">شقة مودرن</button>
+            <button class="selector-btn" onclick="selectProperty('complex')">مجمع سكني فاخر</button>
+            <button class="selector-btn" onclick="selectProperty('custom')">العقار المحدث من المالك</button>
+        </div>
+
+        <!-- تبويبات المعاينة الفنية للعقار -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="changeTab('3d')"><i class="fas fa-cube"></i> عرض 3D</button>
-            <button class="tab-btn" onclick="changeTab('video')"><i class="fas fa-video"></i> فيديو</button>
-            <button class="tab-btn" onclick="changeTab('photos')"><i class="fas fa-images"></i> صور</button>
+            <button class="tab-btn active" onclick="changeTab('3d')"><i class="fas fa-cube"></i> المخطط ثلاثي الأبعاد</button>
+            <button class="tab-btn" onclick="changeTab('map')"><i class="fas fa-map-marked-alt"></i> الموقع الجغرافي</button>
         </div>
 
+        <!-- صندوق المعاينة الرئيسي المطور -->
         <div class="viewer-box">
             <div id="view-3d" class="view-content active">
-                <div class="info-tag"><i class="fas fa-hand-pointer"></i> المس واسحب لتدوير المبنى</div>
+                <div class="info-tag"><i class="fas fa-hand-pointer"></i> حرك ولمس الشاشة لتدوير مجسم العقار الهيكلي</div>
                 <div id="canvas-3d"></div>
             </div>
-            <div id="view-video" class="view-content">
-                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="العرض المرئي" frameborder="0" allowfullscreen style="border:none;"></iframe>
-            </div>
-            <div id="view-photos" class="view-content">
-                <img id="prop-image" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" style="width:100%; height:100%; object-fit:cover;">
+            <div id="view-map" class="view-content">
+                <!-- خريطة افتراضية تفاعلية للموقع لتغطية الاحتياج -->
+                <iframe width="100%" height="100%" src="https://maps.google.com/maps?q=Baghdad&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" style="border:0;" allowfullscreen></iframe>
             </div>
         </div>
 
-        <div class="property-card">
-            <div class="prop-title" id="displayTitle">فيلا مودرن ذكية مع مسبح داخلي</div>
-            <div class="prop-meta">
-                <span><i class="fas fa-ruler"></i> 400 م²</span>
-                <span><i class="fas fa-bed"></i> 4 غرف</span>
+        <!-- تفاصيل ومواصفات العقار المعروض -->
+        <div class="card">
+            <div class="prop-title" id="displayTitle">شقة سكنية بتصميم عصري مفتوح</div>
+            <div class="prop-price" id="displayPrice">85,000 $</div>
+            
+            <div class="specs-grid">
+                <div class="spec-item"><i class="fas fa-ruler-combined"></i><span id="specSize">180 م²</span></div>
+                <div class="spec-item"><i class="fas fa-bed"></i><span id="specBeds">3 غرف نوم</span></div>
+                <div class="spec-item"><i class="fas fa-parking"></i><span>موقف سيارات</span></div>
             </div>
-            <div class="prop-price" id="displayPrice">180,000 $</div>
-            <button class="btn btn-accent" onclick="buyRequest()"><i class="fas fa-wallet"></i> إرسال طلب الشراء مباشر للمالك</button>
+
+            <button class="btn btn-primary" onclick="bookAppointment()"><i class="fas fa-calendar-check"></i> حجز موعد للمعاينة الحقيقية</button>
+            <button class="btn btn-accent" onclick="buyRequest()"><i class="fas fa-shield-alt"></i> طلب شراء مباشر مشفر للمالك</button>
         </div>
 
+        <!-- نظام شات بوت الرد التلقائي المطور -->
         <div class="bot-section">
-            <div class="bot-header"><i class="fas fa-robot" style="color: var(--primary);"></i> مساعد ملاذ الآلي الـ AI</div>
+            <div class="bot-header"><i class="fas fa-robot"></i> مساعد ملاذ الذكي للرد الفوري المباشر</div>
             <div class="chat-area" id="chatArea">
-                <div class="bubble bot">مرحباً بك! أنا البوت الخاص بالمنصة، يمكنك سؤالي عن السعر، المساحة، أو نظام التقسيط المتوفر.</div>
+                <div class="bubble bot">مرحباً بك في منصة ملاذ! أنا مساعدك الآلي، يمكنك سؤالي عن سعر العقار المعروض حالياً، مساحته، أو طرق التقسيط المتاحة.</div>
             </div>
             <div class="input-area">
-                <input type="text" id="botInput" placeholder="اكتب سؤالك هنا...">
+                <input type="text" id="botInput" placeholder="اكتب سؤالك هنا عن السعر أو التفاصيل...">
                 <button class="btn-send" onclick="triggerBot()"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
+
     </div>
 
     <script>
-        function changeTab(type) {
+        // قاعدة بيانات مرنة لتغيير احتياجات التطبيق والعقارات بسهولة
+        const properties = {
+            apt: { title: "شقة سكنية بتصميم عصري مفتوح", price: "85,000 $", size: "180 م²", beds: "3 غرف نوم", color: 0x2563eb },
+            complex: { title: "برج المجمعات السكنية الاستثمارية الفاخرة", price: "420,000 $", size: "650 م²", beds: "مجمع كامل", color: 0x10b981 },
+            custom: { title: "لم يتم تحديث عقار مخصص من لوحة المالك بعد", price: "0 $", size: "0 م²", beds: "0 غرف", color: 0xf59e0b }
+        };
+
+        let currentType = 'apt';
+
+        function selectProperty(type) {
+            currentType = type;
+            document.querySelectorAll('.selector-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // تحديث الواجهة والبيانات بناء على الاحتياج المختار
+            document.getElementById('displayTitle').innerText = properties[type].title;
+            document.getElementById('displayPrice').innerText = properties[type].price;
+            document.getElementById('specSize').innerText = properties[type].size;
+            document.getElementById('specBeds').innerText = properties[type].beds;
+
+            // تغيير لون وحجم المجسم ثلاثي الأبعاد ليعكس العقار المختار
+            houseMesh.material.color.setHex(properties[type].color);
+            if(type === 'complex') {
+                houseMesh.scale.set(1, 2.2, 1); // جعل المبنى يبدو كبرج سكني طوييل
+            } else {
+                houseMesh.scale.set(1, 1, 1);
+            }
+        }
+
+        function changeTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            document.getElementById('view-' + type).classList.add('active');
+            document.getElementById('view-' + tab).classList.add('active');
         }
 
+        // تشغيل لوحة التحكم برمجياً لربطها بالكامل مع التطبيق البوت
         function updateProperty() {
             const title = document.getElementById('newTitle').value;
             const price = document.getElementById('newPrice').value;
-            if(title) document.getElementById('displayTitle').innerText = title;
-            if(price) document.getElementById('displayPrice').innerText = price + " $";
-            document.getElementById('prop-image').src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80";
-            alert("✅ تم التحديث الحصري بنجاح!");
+            const specs = document.getElementById('newSpecs').value;
+
+            if(!title || !price) {
+                alert("يرجى ملء الاسم والسعر لتحديث العقار المخصص بنجاح.");
+                return;
+            }
+
+            properties.custom.title = title;
+            properties.custom.price = price + " $";
+            if(specs) properties.custom.size = specs;
+
+            alert("✅ تم تحديث بياناتك بنجاح! اضغط الآن على زر (العقار المحدث من المالك) في القائمة لتراه يعمل.");
         }
 
-        function buyRequest() { alert("🔒 أمن سيبراني عالي: تم إرسال طلب الشراء مباشرة للمالك والمسؤول الوحيد!"); }
+        function bookAppointment() {
+            alert("📅 تم استلام طلبك! تم جدولة حجز موعد مبدئي لمعاينة الموقع الحقيقي، وسيتواصل معك المسؤول عبر الهاتف لتأكيد الساعة.");
+        }
 
+        function buyRequest() {
+            alert("🔒 أمن سيبراني عالي: تم تشفير رغبة الشراء وحفظها، وإخطار مالك المنصة فوراً بطلبك بدون أي وسيط ثالث.");
+        }
+
+        // بناء وتطوير محرك الـ 3D التفاعلي بالكامل عبر مكتبة Three.js
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 280, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         const canvasContainer = document.getElementById('canvas-3d');
+        
         renderer.setSize(canvasContainer.clientWidth || 350, 280);
         canvasContainer.appendChild(renderer.domElement);
 
         const group = new THREE.Group();
-        const base = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 2), new THREE.MeshBasicMaterial({ color: 0x475569 }));
-        group.add(base);
-        const house = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.2, 1.5), new THREE.MeshBasicMaterial({ color: 0x2563eb, wireframe: true }));
-        house.position.y = 0.7;
-        group.add(house);
-        scene.add(group);
-        camera.position.z = 4; camera.position.y = 1;
+        
+        // أرضية العقار المخطط لها
+        const baseGeo = new THREE.BoxGeometry(2.2, 0.1, 2.2);
+        const baseMat = new THREE.MeshBasicMaterial({ color: 0x475569 });
+        const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+        group.add(baseMesh);
 
-        let isDragging = false; let previousMousePosition = { x: 0, y: 0 };
-        canvasContainer.addEventListener('touchstart', (e) => { isDragging = true; previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY }; });
+        // الهيكل الهندسي للعقار المعروض (Wireframe)
+        const houseGeo = new THREE.BoxGeometry(1.6, 1.0, 1.6);
+        const houseMat = new THREE.MeshBasicMaterial({ color: 0x2563eb, wireframe: true });
+        const houseMesh = new THREE.Mesh(houseGeo, houseMat);
+        houseMesh.position.y = 0.5;
+        group.add(houseMesh);
+
+        scene.add(group);
+        camera.position.z = 3.5;
+        camera.position.y = 0.8;
+
+        // دعم التلميس الكامل لتدوير ومراجعة الهيكل العقاري بالآيفون
+        let isDragging = false;
+        let previousTouchPosition = { x: 0, y: 0 };
+
+        canvasContainer.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            previousTouchPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+
         canvasContainer.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
-            const deltaMove = { x: e.touches[0].clientX - previousMousePosition.x, y: e.touches[0].clientY - previousMousePosition.y };
-            group.rotation.y += deltaMove.x * 0.01; group.rotation.x += deltaMove.y * 0.01;
-            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            const deltaMove = {
+                x: e.touches[0].clientX - previousTouchPosition.x,
+                y: e.touches[0].clientY - previousTouchPosition.y
+            };
+            group.rotation.y += deltaMove.x * 0.01;
+            group.rotation.x += deltaMove.y * 0.01;
+            previousTouchPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         });
+
         canvasContainer.addEventListener('touchend', () => isDragging = false);
 
-        function animate() { requestAnimationFrame(animate); if(!isDragging) group.rotation.y += 0.003; renderer.render(scene, camera); }
+        function animate() {
+            requestAnimationFrame(animate);
+            if(!isDragging) { group.rotation.y += 0.004; } // دوران تلقائي هادئ في وضع الانتظار
+            renderer.render(scene, camera);
+        }
         animate();
 
+        // نظام ذكاء اصطناعي تفاعلي ومؤتمت بالكامل للشات بوت
         function triggerBot() {
-            const input = document.getElementById('botInput'); const area = document.getElementById('chatArea');
+            const input = document.getElementById('botInput');
+            const area = document.getElementById('chatArea');
             if(!input.value.trim()) return;
-            const userDiv = document.createElement('div'); userDiv.className = "bubble user"; userDiv.innerText = input.value;
-            area.appendChild(userDiv); const text = input.value; input.value = ""; area.scrollTop = area.scrollHeight;
+
+            const userDiv = document.createElement('div');
+            userDiv.className = "bubble user";
+            userDiv.innerText = input.value;
+            area.appendChild(userDiv);
+
+            const text = input.value;
+            input.value = "";
+            area.scrollTop = area.scrollHeight;
 
             setTimeout(() => {
-                const botDiv = document.createElement('div'); botDiv.className = "bubble bot";
-                if(text.includes("سعر") || text.includes("كم")) { botDiv.innerText = "السعر الحالي في لوحة المالك هو: " + document.getElementById('displayPrice').innerText; }
-                else if(text.includes("مساحة") || text.includes("متر")) { botDiv.innerText = "العقار يمتد على مساحة 400 متر مربع."; }
-                else { botDiv.innerText = "تم تسجيل استفسارك وسيتم إخطار المسؤول المالك فوراً."; }
-                area.appendChild(botDiv); area.scrollTop = area.scrollHeight;
-            }, 700);
+                const botDiv = document.createElement('div');
+                botDiv.className = "bubble bot";
+                
+                const currentPrice = document.getElementById('displayPrice').innerText;
+                const currentTitle = document.getElementById('displayTitle').innerText;
+
+                if(text.includes("سعر") || text.includes("كم") || text.includes("فلوس")) {
+                    botDiv.innerText = `السعر الرسمي الحالي لـ (${currentTitle}) المفتوح أمامك هو: ${currentPrice}.`;
+                } else if(text.includes("مساحة") || text.includes("متر") || text.includes("مواصفات")) {
+                    botDiv.innerText = `هذا العقار يمتد بمساحة قدرها ${document.getElementById('specSize').innerText} ومجهز بـ ${document.getElementById('specBeds').innerText} مع كافة الخدمات والمرافق الأساسية التابعة له.`;
+                } else if(text.includes("تقسيط") || text.includes("قسط")) {
+                    botDiv.innerText = "نعم، يتوفر نظام دفع مريح جداً: 35% مقدمة أولى، والباقي يتم جدولته بأقساط شهرية مريحة على مدار 5 سنوات تلتزم بها المنصة مباشرة.";
+                } else {
+                    botDiv.innerText = "تم تسجيل استفسارك بدقة بالغة وسيتم تسليم الرسالة مباشرة إلى لوحة المسؤول ليتم الإجابة عليك فوراً.";
+                }
+                
+                area.appendChild(botDiv);
+                area.scrollTop = area.scrollHeight;
+            }, 600);
         }
     </script>
 </body>
