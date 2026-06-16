@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة ملاذ العقارية المطورة</title>
+    <!-- FontAwesome للأيقونات العصرية -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-weight/6.4.0/css/all.min.css">
+    <!-- مكتبة Three.js ثلاثية الأبعاد -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --accent: #10b981;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-accent: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: 40px;
+        }
+
+        header {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        header span { color: var(--primary); }
+
+        .container {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .admin-panel {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #f59e0b;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px; }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg);
+            border: 1px solid var(--surface-accent);
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--surface);
+            border-radius: 12px;
+            padding: 4px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .viewer-box {
+            width: 100%;
+            height: 280px;
+            background-color: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .view-content { display: none; width: 100%; height: 100%; }
+        .view-content.active { display: block; }
+        #canvas-3d { width: 100%; height: 100%; cursor: move; }
+
+        .info-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            pointer-events: none;
+        }
+
+        .property-card {
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .prop-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .prop-meta { display: flex; gap: 15px; font-size: 13px; color: var(--text-muted); margin-bottom: 15px; }
+        .prop-price { font-size: 24px; font-weight: 800; color: var(--accent); margin-bottom: 15px; }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-accent { background-color: var(--accent); color: white; }
+
+        .bot-section {
+            background-color: var(--surface);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            height: 320px;
+        }
+
+        .bot-header {
+            background-color: var(--surface-accent);
+            padding: 12px 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-area { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .bubble { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+        .bubble.bot { background-color: var(--surface-accent); align-self: flex-start; border-top-right-radius: 2px; }
+        .bubble.user { background-color: var(--primary); align-self: flex-end; border-top-left-radius: 2px; }
+        
+        .input-area { display: flex; padding: 10px; background-color: rgba(15, 23, 42, 0.5); border-top: 1px solid rgba(255,255,255,0.05); gap: 8px; }
+        .input-area input { flex: 1; padding: 12px; background-color: var(--bg); border: 1px solid var(--surface-accent); border-radius: 8px; color: white; outline: none; }
+        .btn-send { background-color: var(--primary); border: none; color: white; width: 45px; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header>مَلاذ <span>العقارية 3D</span></header>
+
+    <div class="container">
+        <div class="admin-panel">
+            <div class="admin-header"><i class="fas fa-user-shield"></i> لوحة التحكم الحصرية للمالك</div>
+            <div class="form-group">
+                <label>اسم العقار الجديد</label>
+                <input type="text" id="newTitle" class="form-control" placeholder="مثال: مجمع الشقق الفاخرة">
+            </div>
+            <div class="form-group">
+                <label>السعر ($)</label>
+                <input type="text" id="newPrice" class="form-control" placeholder="مثال: 250,000">
+            </div>
+            <button class="btn btn-primary" onclick="updateProperty()"><i class="fas fa-sync"></i> تحديث ونشر العقار فوراً</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="changeTab('3d')"><i class="fas fa-cube"></i> عرض 3D</button>
+            <button class="tab-btn" onclick="changeTab('video')"><i class="fas fa-video"></i> فيديو</button>
+            <button class="tab-btn" onclick="changeTab('photos')"><i class="fas fa-images"></i> صور</button>
+        </div>
+
+        <div class="viewer-box">
+            <div id="view-3d" class="view-content active">
+                <div class="info-tag"><i class="fas fa-hand-pointer"></i> المس واسحب لتدوير المبنى</div>
+                <div id="canvas-3d"></div>
+            </div>
+            <div id="view-video" class="view-content">
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="العرض المرئي" frameborder="0" allowfullscreen style="border:none;"></iframe>
+            </div>
+            <div id="view-photos" class="view-content">
+                <img id="prop-image" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+        </div>
+
+        <div class="property-card">
+            <div class="prop-title" id="displayTitle">فيلا مودرن ذكية مع مسبح داخلي</div>
+            <div class="prop-meta">
+                <span><i class="fas fa-ruler"></i> 400 م²</span>
+                <span><i class="fas fa-bed"></i> 4 غرف</span>
+            </div>
+            <div class="prop-price" id="displayPrice">180,000 $</div>
+            <button class="btn btn-accent" onclick="buyRequest()"><i class="fas fa-wallet"></i> إرسال طلب الشراء مباشر للمالك</button>
+        </div>
+
+        <div class="bot-section">
+            <div class="bot-header"><i class="fas fa-robot" style="color: var(--primary);"></i> مساعد ملاذ الآلي الـ AI</div>
+            <div class="chat-area" id="chatArea">
+                <div class="bubble bot">مرحباً بك! أنا البوت الخاص بالمنصة، يمكنك سؤالي عن السعر، المساحة، أو نظام التقسيط المتوفر.</div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="botInput" placeholder="اكتب سؤالك هنا...">
+                <button class="btn-send" onclick="triggerBot()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeTab(type) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('view-' + type).classList.add('active');
+        }
+
+        function updateProperty() {
+            const title = document.getElementById('newTitle').value;
+            const price = document.getElementById('newPrice').value;
+            if(title) document.getElementById('displayTitle').innerText = title;
+            if(price) document.getElementById('displayPrice').innerText = price + " $";
+            document.getElementById('prop-image').src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80";
+            alert("✅ تم التحديث الحصري بنجاح!");
+        }
+
+        function buyRequest() { alert("🔒 أمن سيبراني عالي: تم إرسال طلب الشراء مباشرة للمالك والمسؤول الوحيد!"); }
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 280, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        const canvasContainer = document.getElementById('canvas-3d');
+        renderer.setSize(canvasContainer.clientWidth || 350, 280);
+        canvasContainer.appendChild(renderer.domElement);
+
+        const group = new THREE.Group();
+        const base = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 2), new THREE.MeshBasicMaterial({ color: 0x475569 }));
+        group.add(base);
+        const house = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.2, 1.5), new THREE.MeshBasicMaterial({ color: 0x2563eb, wireframe: true }));
+        house.position.y = 0.7;
+        group.add(house);
+        scene.add(group);
+        camera.position.z = 4; camera.position.y = 1;
+
+        let isDragging = false; let previousMousePosition = { x: 0, y: 0 };
+        canvasContainer.addEventListener('touchstart', (e) => { isDragging = true; previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY }; });
+        canvasContainer.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const deltaMove = { x: e.touches[0].clientX - previousMousePosition.x, y: e.touches[0].clientY - previousMousePosition.y };
+            group.rotation.y += deltaMove.x * 0.01; group.rotation.x += deltaMove.y * 0.01;
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+        canvasContainer.addEventListener('touchend', () => isDragging = false);
+
+        function animate() { requestAnimationFrame(animate); if(!isDragging) group.rotation.y += 0.003; renderer.render(scene, camera); }
+        animate();
+
+        function triggerBot() {
+            const input = document.getElementById('botInput'); const area = document.getElementById('chatArea');
+            if(!input.value.trim()) return;
+            const userDiv = document.createElement('div'); userDiv.className = "bubble user"; userDiv.innerText = input.value;
+            area.appendChild(userDiv); const text = input.value; input.value = ""; area.scrollTop = area.scrollHeight;
+
+            setTimeout(() => {
+                const botDiv = document.createElement('div'); botDiv.className = "bubble bot";
+                if(text.includes("سعر") || text.includes("كم")) { botDiv.innerText = "السعر الحالي في لوحة المالك هو: " + document.getElementById('displayPrice').innerText; }
+                else if(text.includes("مساحة") || text.includes("متر")) { botDiv.innerText = "العقار يمتد على مساحة 400 متر مربع."; }
+                else { botDiv.innerText = "تم تسجيل استفسارك وسيتم إخطار المسؤول المالك فوراً."; }
+                area.appendChild(botDiv); area.scrollTop = area.scrollHeight;
+            }, 700);
+        }
+    </script>
+</body>
+</html>
